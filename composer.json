@@ -1,0 +1,20 @@
+{
+    "name": "fruchuxs/paru-cms",
+    "description": "A light weight cms",
+    "require": {
+        "slim/slim": "^4",
+        "slim/psr7": "^0.6",
+        "php-di/php-di": "^6.0.9",
+        "tuupola/slim-jwt-auth": "^3.3",
+        "tuupola/slim-basic-auth": "^3.2",
+        "symfony/serializer": "^4.2",
+        "symfony/finder": "^4.2",
+        "erusev/parsedown": "^1.7",
+        "symfony/filesystem": "^4.2",
+        "pagerange/metaparsedown": "v1.0.5",
+        "symfony/property-access": "v4.3.5"
+    },
+    "autoload": {
+        "psr-4": {"Paru\\": "src/"}
+    }
+}
