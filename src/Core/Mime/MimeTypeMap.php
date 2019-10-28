@@ -18,12 +18,17 @@
 
 namespace Paru\Core\Mime;
 
+use ArrayAccess;
+use InvalidArgumentException;
+
 /**
  * Holds paths for mime types.
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
-class MimeTypeMap implements \ArrayAccess {
+class MimeTypeMap implements ArrayAccess {
+
+    use MimeTypeHelper;
 
     /**
      * @var array
@@ -80,7 +85,7 @@ class MimeTypeMap implements \ArrayAccess {
     }
 
     private function doOperation($mimeTypeList, Callable $operation) {
-        if (!$this->validateMimeType($mimeTypeList)) {
+        if (!$this->isValidMimeType($mimeTypeList)) {
             throw new InvalidArgumentException('No valid mime Type given (was of type ' . gettype($mimeTypeList) . ' with value "' . $mimeTypeList . '").');
         }
 
@@ -97,10 +102,4 @@ class MimeTypeMap implements \ArrayAccess {
             }
         }
     }
-
-    private function validateMimeType(string $mime): bool {
-        return is_string($mime) &&
-                preg_match('/^((([a-z]+[a-z0-9\-_]*)|\*)\/(([a-z]+[a-z0-9\-_]*)|\*))(, ?(([a-z]+[a-z0-9\-_]*)\/(([a-z]+[a-z0-9\-_]*)|\*)))*$/iU', $mime);
-    }
-
 }
