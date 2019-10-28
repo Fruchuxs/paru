@@ -1,0 +1,11 @@
+{
+    "meta": {
+        "payload_classname": null
+    },
+    "data": {
+        "uniqueName": "a_unique_name",
+        "mimeType": "application\/test",
+        "meta": [],
+        "payload": "hello world"
+    }
+}

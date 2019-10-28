@@ -40,14 +40,20 @@ class DirectoryHandler {
         file_put_contents($path, $content);
     }
 
-    public function getFile(string $name): string {
+    public function getFileContent(string $name): string {
         $path = $this->pathHelper->joinPaths($this->searchPath, $name);
 
-        if (!file_exists($path)) {
+        if (!$this->exists($name)) {
             throw new InvalidArgumentException('File "' . $path . '" doesn\'t exists.');
         }
 
         return file_get_contents($path);
+    }
+
+    public function exists(string $name): bool {
+        $path = $this->pathHelper->joinPaths($this->searchPath, $name);
+
+        return file_exists($path);
     }
 
 }
