@@ -21,29 +21,33 @@ use Paru\Core\Storage\DataPersistence;
 use Paru\Core\Storage\File\DefaultFilePersistence;
 use Paru\Core\Storage\File\MarkdownFilePersistence;
 use Paru\Core\Storage\StorageComposite;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use function DI\autowire;
 use function DI\get;
 
 return [
     // Symfony serializer
-    'symfony.serializer.encoders.xml' => autowire(Symfony\Component\Serializer\Encoder\XmlEncoder::class),
-    'symfony.serializer.encoders.json' => autowire(Symfony\Component\Serializer\Encoder\JsonEncoderw::class),
-    'symfony.serializer.normalizers.objectnormalizer' => autowire(\Symfony\Component\Serializer\Normalizer\ObjectNormalizer::class),
+    'symfony.serializer.encoders.xml' => autowire(XmlEncoder::class),
+    'symfony.serializer.encoders.json' => autowire(JsonEncoder::class),
+    ObjectNormalizer::class => autowire(ObjectNormalizer::class),
     'symfony.serializer.encoders' => [
         get('symfony.serializer.encoders.xml'),
         get('symfony.serializer.encoders.json'),
     ],
     'symfony.serializer.normalizers' => [
-        get('symfony.serializer.normalizers.objectnormalizer'),
+        get(ObjectNormalizer::class),
     ],
-    Symfony\Component\Serializer\Serializer::class => autowire(Symfony\Component\Serializer\Serializer::class)
+    Serializer::class => autowire(Serializer::class)
         ->constructor(get('symfony.serializer.normalizers'), get('symfony.serializer.encoders')),
     
     // where to store the files of a specific mime type
     'paru.persistence.paths.mime' => [
         'image/*' => '../files/images',
         'text/*' => '../files/documents',
-        'application/*' => '../files/others'
+        '*/*' => '../files/others',
     ],
     
      MimeTypeMap::class => autowire()
