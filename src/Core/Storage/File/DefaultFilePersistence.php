@@ -69,7 +69,7 @@ class DefaultFilePersistence implements DataPersistence, DataFinder {
         return new Data($result->getUniqueName(), $payloadData, $result->getMimeType(), $result->getMeta());
     }
 
-    public function list(DataCondition $condition): array {
+    public function list(string $mimeType, DataCondition $condition): array {
         throw new Exception('Not implemented yet.');
     }
 

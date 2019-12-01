@@ -25,5 +25,5 @@ namespace Paru\Core\Storage;
  */
 interface DataFinder {
     public function find(string $uniqueName) : Data;
-    public function list(DataCondition $condition) : array;
+    public function list(string $mimeType, DataCondition $condition) : array;
 }
