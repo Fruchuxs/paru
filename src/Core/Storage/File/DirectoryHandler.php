@@ -8,6 +8,9 @@
 
 namespace Paru\Core\Storage\File;
 
+use Exception;
+use InvalidArgumentException;
+
 /**
  * Retrieve and store files in a specific directory.
  *
@@ -34,7 +37,7 @@ class DirectoryHandler {
     public function saveFile(string $name, $content, bool $overrideExistsing = false): void {
         $path = $this->pathHelper->joinPaths($this->searchPath, $name);
         if (!$overrideExistsing && file_exists($path)) {
-            throw new \Exception("File $path already exists.");
+            throw new Exception("File $path already exists.");
         }
 
         file_put_contents($path, $content);
