@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Paru\Core\Storage\File\Index;
+namespace Paru\Core\Storage\Index;
 
 use InvalidArgumentException;
 use Paru\Core\Mime\MimeTypeHelper;

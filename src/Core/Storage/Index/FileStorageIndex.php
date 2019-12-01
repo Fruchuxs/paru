@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Paru\Core\Storage\File\Index;
+namespace Paru\Core\Storage\Index;
 
 use DateTime;
 use InvalidArgumentException;
@@ -30,7 +30,7 @@ use Paru\Core\Storage\Index\NormalizeIndexName;
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
-class StorageFileIndex {
+class FileStorageIndex implements StorageIndex {
 
     use MimeTypeHelper;
     use NormalizeIndexName;
@@ -59,6 +59,11 @@ class StorageFileIndex {
     public function getIndex(string $name): IndexItem {
         $indexList = $this->getIndexList();
         $normalizedIndexName = $this->normalizeName($name);
+        
+        if(!array_key_exists($normalizedIndexName, $indexList)) {
+            throw new Exception("Index '$name' does not exist.");
+        }
+        
         $mimeType = $indexList[$normalizedIndexName];
 
         $index = new IndexItem();
@@ -81,7 +86,7 @@ class StorageFileIndex {
             throw new InvalidArgumentException("Index '{$index->getName()}' already exists.");
         }
 
-        $indexList = $this->getIndexList();
+        $indexList = &$this->getIndexList();
         $normalizedIndexName = $this->normalizeName($index->getName());
 
         $indexList[$normalizedIndexName] = [
@@ -119,8 +124,9 @@ class StorageFileIndex {
 
     public function exists(string $name): bool {
         $normalizedIndexName = $this->normalizeName($name);
+        $indexList = $this->getIndexList();
 
-        return array_key_exists($normalizedIndexName, $this->indexList);
+        return array_key_exists($normalizedIndexName, $indexList);
     }
 
     private function mergeIndexListBack(): void {
@@ -129,12 +135,22 @@ class StorageFileIndex {
 
         $isAdded = function($key) use($loaded) {
             // TODO: check if create date of added is higher as file date
-            return !array_key_exists($key, $loaded) && $this->added[$key];
+            return !array_key_exists($key, $loaded) && array_key_exists($key, $this->added);
         };
         
-        $isDeleted = function($key) use($loaded) {
-            return !array_key_exists($key, $loaded) || (array_key_exists($key, $this->deleted) && 
-                    $loaded[$key]['createDate'] <= $this->deleted['deleteDate']);
+        $isDeleted = function($key) use($loaded, $indexList) {
+            $isDeletedFromOtherRequestSinceLoad = array_key_exists($key, $indexList) && 
+                    !array_key_exists($key, $this->added) &&  
+                    !array_key_exists($key, $loaded);
+            
+            $isNotDeltedAndRecreatedSinceLoad = array_key_exists($key, $this->deleted) && 
+                    array_key_exists($key, $loaded) && 
+                    $loaded[$key]['createDate'] <= $this->deleted['deleteDate'];
+            
+            $isJustDeleted = !array_key_exists($key, $loaded) && array_key_exists($key, $this->deleted);
+            
+            return  $isDeletedFromOtherRequestSinceLoad || $isNotDeltedAndRecreatedSinceLoad || $isJustDeleted;
+                    
         };
         
         $existInBoth = function($key) use($loaded, $indexList) {
@@ -143,7 +159,7 @@ class StorageFileIndex {
         
         $result = [];
         foreach ($indexList as $key => $data) {
-            if ($existInBoth($key) && $isAdded($key) && !$isDeleted($key)) {     
+            if (($existInBoth($key) || $isAdded($key)) && !$isDeleted($key)) {     
                 $result[$key] = $data;
             } 
         }
@@ -164,8 +180,9 @@ class StorageFileIndex {
 
     private function &loadFromFile(): array {
         $indexFile = $this->directoryHandler->getFileContent($this->indexFileName);
-
-        return json_decode($indexFile, true);
+        $data = json_decode($indexFile, true);
+        
+        return $data;
     }
 
 }
