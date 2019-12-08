@@ -64,7 +64,7 @@ class FileStorageIndex implements StorageIndex {
             throw new Exception("Index '$name' does not exist.");
         }
         
-        $mimeType = $indexList[$normalizedIndexName];
+        $mimeType = $indexList[$normalizedIndexName]['mimeType'];
 
         $index = new IndexItem();
         return $index->setName($normalizedIndexName)
