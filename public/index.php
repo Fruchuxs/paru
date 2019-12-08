@@ -55,10 +55,10 @@ $app->group('/backend', function (RouteCollectorProxy $group) {
     $group->get('', IndexController::class);
     $group->group('/pages', function (RouteCollectorProxy $group) {
         $group->get('', ListPageController::class);
-        $group->get('{name}', GetPageController::class);
+        $group->get('/{name}', GetPageController::class);
         $group->post('', CreatePageController::class);
-        $group->put('{name}', UpdatePageController::class);
-        $group->delete('{name}', DeletePageController::class);
+        $group->put('/{name}', UpdatePageController::class);
+        $group->delete('/{name}', DeletePageController::class);
     });
     $group->get('/[{params:.*}]', function ($request, $response, $args) {
         throw new NotFoundException($request, $response, $args);
