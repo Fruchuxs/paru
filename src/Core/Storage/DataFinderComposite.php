@@ -75,7 +75,7 @@ class DataFinderComposite implements DataFinder {
             throw new Exception("No strategy for mime type '$mimeType' registred.");
         }
 
-        return $this->mimetypeStrategies[$mimeType];
+        return $this->mimetypeStrategies[$searchForMime];
     }
 
 }
