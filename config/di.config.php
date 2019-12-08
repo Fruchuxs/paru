@@ -17,10 +17,17 @@
  */
 
 use Paru\Core\Mime\MimeTypeMap;
+use Paru\Core\Storage\DataFinder;
+use Paru\Core\Storage\DataFinderComposite;
 use Paru\Core\Storage\DataPersistence;
 use Paru\Core\Storage\File\DefaultFilePersistence;
+use Paru\Core\Storage\File\DirectoryHandler;
 use Paru\Core\Storage\File\MarkdownFilePersistence;
+use Paru\Core\Storage\File\PathHelper;
+use Paru\Core\Storage\Index\FileStorageIndex;
+use Paru\Core\Storage\Index\StorageIndex;
 use Paru\Core\Storage\StorageComposite;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -41,27 +48,42 @@ return [
         get(ObjectNormalizer::class),
     ],
     Serializer::class => autowire(Serializer::class)
-        ->constructor(get('symfony.serializer.normalizers'), get('symfony.serializer.encoders')),
+            ->constructor(get('symfony.serializer.normalizers'), get('symfony.serializer.encoders')),
+    
+    PathHelper::class => autowire(PathHelper::class),
+    
+    'paru.storage.index.fileName' => 'storage_index',
+    
+    StorageIndex::class => function(ContainerInterface $c) {
+        $directoryHandler = new DirectoryHandler('../files/internal', $c->get(PathHelper::class));
+        
+        return new FileStorageIndex($directoryHandler, $c->get('paru.storage.index.fileName'));
+    },
     
     // where to store the files of a specific mime type
-    'paru.persistence.paths.mime' => [
+    'paru.storage.paths.mime' => [
         'image/*' => '../files/images',
         'text/*' => '../files/documents',
         '*/*' => '../files/others',
     ],
-    
-     MimeTypeMap::class => autowire()
-        ->constructor(get('paru.persistence.paths.mime')),
-    
+    MimeTypeMap::class => autowire()
+            ->constructor(get('paru.storage.paths.mime')),
     // persistence strategies by mime type
-    'paru.persistence.strategies' => [
+    'paru.storage.save.strategies' => [
         'text/markdown' => autowire(MarkdownFilePersistence::class),
     ],
-    
     // persistence fallback strategy
-    'paru.persistence.strategies.default' => autowire(DefaultFilePersistence::class),
-    
+    'paru.storage.save.strategies.default' => autowire(DefaultFilePersistence::class),
     DataPersistence::class => autowire(StorageComposite::class)
-        ->constructor(get('paru.persistence.strategies.default'),
-                get('paru.persistence.strategies')),
+            ->constructor(get('paru.storage.save.strategies.default'),
+                    get(StorageIndex::class),
+                    get('paru.storage.save.strategies')),
+    
+    // find things in storage
+    'paru.storage.find.strategies' => [
+        '*/*' => autowire(DefaultFilePersistence::class),
+    ],
+    
+    DataFinder::class => autowire(DataFinderComposite::class)
+            ->constructor(get(StorageIndex::class), get('paru.storage.find.strategies')),
 ];
