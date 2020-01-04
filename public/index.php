@@ -8,12 +8,9 @@ use Paru\Api\Controllers\Backend\Content\Page\ListPageController;
 use Paru\Api\Controllers\Backend\Content\Page\UpdatePageController;
 use Paru\Api\Controllers\Backend\IndexController;
 use Paru\Api\Controllers\PageController;
-use Paru\Core\Storage\DataPersistence;
-use Paru\Core\Storage\StorageComposite;
 use Slim\Exception\NotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
-use Tuupola\Middleware\HttpBasicAuthentication;
 
 require '../vendor/autoload.php';
 
