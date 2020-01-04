@@ -1,14 +1,16 @@
 <?php
 
-namespace Paru\Api\Controllers\Backend\Content\Page;
+namespace Paru\Api\Controllers\Backend\Page;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class DeletePageController {
+class ListPageController {
 
     public function __invoke(Request $request, Response $response, array $args) {
-        return $response->write($request->getUri());
+        $response->getBody()->write('listpage');
+
+        return $response;
     }
 
 }

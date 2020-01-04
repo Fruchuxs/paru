@@ -1,6 +1,6 @@
 <?php
 
-namespace Paru\Api\Controllers\Backend\Content\Page;
+namespace Paru\Api\Controllers\Backend\Page;
 
 use Paru\Core\Content\Page\FindPage;
 use Psr\Http\Message\ResponseInterface as Response;
