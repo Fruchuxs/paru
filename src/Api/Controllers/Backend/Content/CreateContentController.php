@@ -18,11 +18,23 @@
 
 namespace Paru\Api\Controllers\Backend\Content;
 
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 /**
  * Description of CreateContentController
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
 class CreateContentController {
-    
+
+    public function __construct() {
+        
+    }
+
+    public function __invoke(Request $request, Response $response, array $args) {
+
+        return $response;
+    }
+
 }
