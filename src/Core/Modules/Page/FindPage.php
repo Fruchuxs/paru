@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-namespace Paru\Core\Content\Page;
+namespace Paru\Core\Modules\Page;
 
+use DateTime;
+use DateTimeZone;
 use Paru\Core\Storage\DataFinder;
 
 /**
@@ -44,9 +46,9 @@ class FindPage {
         if (array_key_exists('createDate', $meta)) {
             $dateInfo = $meta['createDate'];
 
-            $createDate = new \DateTime();
+            $createDate = new DateTime();
             
-            $createDate->setTimezone(new \DateTimeZone('UTC'));
+            $createDate->setTimezone(new DateTimeZone('UTC'));
             $createDate->setTimestamp($dateInfo['timestamp']);
         }
 

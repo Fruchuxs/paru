@@ -1,6 +1,6 @@
 <?php
 
-namespace Paru\Core\Content\Page;
+namespace Paru\Core\Modules\Page;
 
 class Page {
 

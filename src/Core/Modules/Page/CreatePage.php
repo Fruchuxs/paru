@@ -1,7 +1,8 @@
 <?php
 
-namespace Paru\Core\Content\Page;
+namespace Paru\Core\Modules\Page;
 
+use Paru\Core\Modules\Page\Page;
 use Paru\Core\Storage\Data;
 use Paru\Core\Storage\DataPersistence;
 
