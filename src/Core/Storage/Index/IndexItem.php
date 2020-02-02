@@ -19,7 +19,7 @@
 namespace Paru\Core\Storage\Index;
 
 use InvalidArgumentException;
-use Paru\Core\Mime\MimeTypeHelper;
+use Paru\Core\File\MimeTypeHelper;
 
 /**
  * Description of IndexItem

@@ -28,6 +28,7 @@ class DataCondition {
     private $offset;
     private $orderBy;
     private $whereCondition;
+    
     function getLimit() {
         return $this->limit;
     }

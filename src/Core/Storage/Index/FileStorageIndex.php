@@ -1,5 +1,12 @@
 <?php
 
+use InvalidArgumentException;
+use Paru\Core\File\DirectoryHandler;
+use Paru\Core\Mime\MimeTypeHelper;
+use Paru\Core\Storage\Index\IndexItem;
+use Paru\Core\Storage\Index\NormalizeIndexName;
+use Paru\Core\Storage\Index\StorageIndex;
+
 /*
  * Copyright 2019 Fruchuxs <fruchuxs@gmail.com>.
  *
@@ -17,13 +24,6 @@
  */
 
 namespace Paru\Core\Storage\Index;
-
-use DateTime;
-use InvalidArgumentException;
-use Paru\Core\Mime\MimeTypeHelper;
-use Paru\Core\Storage\File\DirectoryHandler;
-use Paru\Core\Storage\Index\IndexItem;
-use Paru\Core\Storage\Index\NormalizeIndexName;
 
 /**
  * Description of StorageFileIndex

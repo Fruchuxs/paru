@@ -1,17 +1,11 @@
 <?php
 
 use DI\ContainerBuilder;
-use Paru\Api\Controllers\Backend\Content\Page\CreatePageController;
-use Paru\Api\Controllers\Backend\Content\Page\DeletePageController;
-use Paru\Api\Controllers\Backend\Content\Page\GetPageController;
-use Paru\Api\Controllers\Backend\Content\Page\ListPageController;
-use Paru\Api\Controllers\Backend\Content\Page\UpdatePageController;
 use Paru\Api\Controllers\Backend\IndexController;
-use Paru\Api\Controllers\PageController;
-use Slim\Exception\NotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 
+chdir(__DIR__);
 require '../vendor/autoload.php';
 
 $defaultConfig = [
@@ -25,9 +19,17 @@ $defaultDependencyDefinitions = [
 ];
 $globalDependencyConfig = require('../config/di.config.php');
 
+$bundles = require('../config/bundles.php');
+
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true);
-$containerBuilder->addDefinitions(array_merge($defaultDependencyDefinitions, $globalDependencyConfig));
+$containerBuilder->addDefinitions($defaultDependencyDefinitions, $globalDependencyConfig);
+
+foreach ($bundles as $bundle) {
+    if ($bundle instanceof Paru\Core\Bundle) {
+        $containerBuilder->addDefinitions($bundle->getServices());
+    }
+}
 
 AppFactory::setContainer($containerBuilder->build());
 $app = AppFactory::create();
@@ -37,7 +39,6 @@ $app = AppFactory::create();
  */
 $app->addRoutingMiddleware();
 //$app->add(new HttpBasicAuthentication($config['auth']));
-
 // must be the last middleware
 $app->addErrorMiddleware(
         $config['settings']['error']['displayErrorDetails'],
@@ -48,22 +49,26 @@ $app->addErrorMiddleware(
 /**
  * Routes
  */
-$app->group('/backend', function (RouteCollectorProxy $group) {
+$app->group('/backend', function (RouteCollectorProxy $group) use ($bundles) {
     $group->get('', IndexController::class);
-    $group->group('/pages', function (RouteCollectorProxy $group) {
-        $group->get('', ListPageController::class);
-        $group->get('/{name}', GetPageController::class);
-        $group->post('', CreatePageController::class);
-        $group->put('/{name}', UpdatePageController::class);
-        $group->delete('/{name}', DeletePageController::class);
-    });
-    $group->get('/[{params:.*}]', function ($request, $response, $args) {
-        throw new NotFoundException($request, $response, $args);
-    });
+
+    foreach ($bundles as $bundle) {
+        if ($bundle instanceof Paru\Core\Bundle) {
+            $resourceName = $bundle->getResourceName();
+            $group->group("/$resourceName", function (RouteCollectorProxy $group) use ($bundle) {
+                $bundle->configureBackendRoutes($group);
+            });
+        }
+    }
 });
 
-// Todo: Maybe any
-$app->get('/[{params:.*}]', PageController::class);
-
+foreach ($bundles as $bundle) {
+    if ($bundle instanceof Paru\Core\Bundle) {
+        $resourceName = $bundle->getResourceName();
+        $app->group("/$resourceName", function (RouteCollectorProxy $group) use ($bundle) {
+            $bundle->configureFrontendRoutes($group);
+        });
+    }
+}
 
 $app->run();

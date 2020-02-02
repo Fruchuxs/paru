@@ -1,5 +1,10 @@
 <?php
 
+use Paru\Core\File\DirectoryHandlerByMimeTypeFactory;
+use Paru\Core\Storage\Data;
+use Paru\Core\Storage\DataPersistence;
+use Symfony\Component\Yaml\Yaml;
+
 /*
  * Copyright 2019 Fruchuxs <fruchuxs@gmail.com>.
  *
@@ -17,10 +22,6 @@
  */
 
 namespace Paru\Core\Storage\File;
-
-use Paru\Core\Storage\Data;
-use Paru\Core\Storage\DataPersistence;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Description of MarkdownFilePersistence

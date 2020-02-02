@@ -3,7 +3,7 @@
 namespace Paru\Core\Storage;
 
 use Exception;
-use Paru\Core\Mime\MimeTypeHelper;
+use Paru\Core\File\MimeTypeHelper;
 
 class Data {
 

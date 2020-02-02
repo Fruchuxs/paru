@@ -18,8 +18,8 @@
 
 namespace Paru\Core\Storage;
 
+use Exception;
 use Paru\Core\Storage\Index\StorageIndex;
-use TheSeer\Tokenizer\Exception;
 
 /**
  * Description of DataFinderComposite

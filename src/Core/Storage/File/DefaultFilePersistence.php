@@ -3,16 +3,23 @@
 namespace Paru\Core\Storage\File;
 
 use Exception;
+use Paru\Core\File\DirectoryHandlerByMimeTypeFactory;
 use Paru\Core\Storage\Data;
 use Paru\Core\Storage\DataCondition;
 use Paru\Core\Storage\DataFinder;
 use Paru\Core\Storage\DataPersistence;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Serializer\Serializer;
 
 class DefaultFilePersistence implements DataPersistence, DataFinder {
 
     /**
-     * @var DirectoryHandlerFactory
+     * @var Finder
+     */
+    private $finder;
+
+    /**
+     * @var DirectoryHandlerByMimeTypeFactory
      */
     private $directoryHandlerFactory;
 
@@ -22,9 +29,10 @@ class DefaultFilePersistence implements DataPersistence, DataFinder {
      */
     protected $serializer;
 
-    public function __construct(DirectoryHandlerFactory $directoryHandlerFactory, Serializer $serializer) {
+    public function __construct(DirectoryHandlerByMimeTypeFactory $directoryHandlerFactory, Serializer $serializer, Finder $finder) {
         $this->directoryHandlerFactory = $directoryHandlerFactory;
         $this->serializer = $serializer;
+        $this->finder = $finder;
     }
 
     public function save(Data $data, bool $overrideExisting = false): void {
