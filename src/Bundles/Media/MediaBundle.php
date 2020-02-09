@@ -54,10 +54,15 @@ class MediaBundle implements Bundle {
 
     public function getServices(): array {
         return [
+            'paru.bundles.media.logger' => function(ContainerInterface $c) {
+                return new \Monolog\Logger('bundles.media');
+            },
             'paru.bundles.media.directoryhandler' => autowire(DirectoryHandler::class)
                     ->constructorParameter('searchPath', './files'),
             MediaFiles::class => autowire(MediaFiles::class)
-                    ->constructor(get('paru.bundles.media.directoryhandler')),
+                    ->constructor(
+                            get('paru.bundles.media.logger'),
+                            get('paru.bundles.media.directoryhandler')),
         ];
     }
 

@@ -81,5 +81,7 @@ return [
     ],
     DataFinder::class => autowire(DataFinderComposite::class)
             ->constructor(get(StorageIndex::class), get('paru.storage.find.strategies')),
+    \Psr\Log\LoggerInterface::class => autowire(Monolog\Logger::class)
+            ->constructor('logger'),
 
 ];

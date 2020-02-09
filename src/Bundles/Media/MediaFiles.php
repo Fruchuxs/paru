@@ -20,8 +20,8 @@ namespace Paru\Bundles\Media;
 
 use BadMethodCallException;
 use Exception;
-use InvalidArgumentException;
 use Paru\Core\File\DirectoryHandler;
+use Psr\Log\LoggerInterface;
 
 /**
  * Description of ContentFiles
@@ -31,12 +31,18 @@ use Paru\Core\File\DirectoryHandler;
 class MediaFiles {
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var DirectoryHandler
      */
     private $rootDirectory;
 
-    public function __construct(DirectoryHandler $rootDirectory) {
+    public function __construct(LoggerInterface $logger, DirectoryHandler $rootDirectory) {
         $this->rootDirectory = $rootDirectory;
+        $this->logger = $logger;
     }
 
     public function listFiles(?string $path): array {
@@ -64,18 +70,25 @@ class MediaFiles {
 
     public function tryDeleteFile(string $path): bool {
         if (empty($path)) {
-            throw new InvalidArgumentException('Invalid Path given.');
+            $this->logger->warning('Given path was empty.');
+            
+            return false;
         }
 
         if (!$this->rootDirectory->exists($path)) {
+            $this->logger->warning('Given path doesn\'t exists.');
+            
             return false;
         }
 
         try {
             $this->rootDirectory->deleteFile($path);
+            
+            return true;
         } catch (Exception $ex) {
-            throw new InvalidArgumentException('Can\'t delete file.');
+            $this->logger->error('Unknown error.', ['exception' => $ex]);
+            
+            return false;
         }
     }
-
 }
