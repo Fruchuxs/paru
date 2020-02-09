@@ -17,6 +17,6 @@
  */
 
 return [
-    new \Paru\Bundles\Page\PageBundle(),
-    new Paru\Bundles\Media\MediaBundle(),
+    'pages' => new \Paru\Bundles\Page\PageBundle(),
+    'media' => new Paru\Bundles\Media\MediaBundle(),
 ];

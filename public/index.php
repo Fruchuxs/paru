@@ -1,41 +1,45 @@
 <?php
 
 use DI\ContainerBuilder;
-use Paru\Api\Controllers\Backend\IndexController;
+use Paru\Core\BundlesLoader;
 use Slim\Factory\AppFactory;
-use Slim\Routing\RouteCollectorProxy;
 
+/**
+ * Change working directory for better handling ...
+ */
 chdir(__DIR__);
 require '../vendor/autoload.php';
 
-$defaultConfig = [
-        // set Default config here
-];
-$globalConfig = require('../config/config.php');
-$config = array_merge($defaultConfig, $globalConfig);
 
-$defaultDependencyDefinitions = [
-    'paru.configuration' => $config,
-];
-$globalDependencyConfig = require('../config/di.config.php');
-
+$dependencies = require('../config/di.config.php');
 $bundles = require('../config/bundles.php');
 
+$bundlesLoader = new BundlesLoader($bundles);
+
+/**
+ * Setup Dependency Container
+ */
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true);
-$containerBuilder->addDefinitions($defaultDependencyDefinitions, $globalDependencyConfig);
+$containerBuilder->addDefinitions($dependencies);
 
-foreach ($bundles as $bundle) {
-    if ($bundle instanceof Paru\Core\Bundle) {
-        $containerBuilder->addDefinitions($bundle->getServices());
-    }
-}
+/**
+ * Add Bundles Registrations
+ */
+$bundlesLoader->registerServices(function($definition) use($containerBuilder){
+    $containerBuilder->addDefinitions($definition);
+});
+$container = $containerBuilder->build();
+$config = $container->get('paru.configuration');
 
-AppFactory::setContainer($containerBuilder->build());
+/**
+ * Setup App.
+ */
+AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 /**
- * Middleware configuration
+ * Setup Middlewares
  */
 $app->addRoutingMiddleware();
 //$app->add(new HttpBasicAuthentication($config['auth']));
@@ -47,28 +51,11 @@ $app->addErrorMiddleware(
 
 
 /**
- * Routes
+ * Register Routes
  */
-$app->group('/backend', function (RouteCollectorProxy $group) use ($bundles) {
-    $group->get('', IndexController::class);
+$bundlesLoader->registerRoutes($app);
 
-    foreach ($bundles as $bundle) {
-        if ($bundle instanceof Paru\Core\Bundle) {
-            $resourceName = $bundle->getResourceName();
-            $group->group("/$resourceName", function (RouteCollectorProxy $group) use ($bundle) {
-                $bundle->configureBackendRoutes($group);
-            });
-        }
-    }
-});
-
-foreach ($bundles as $bundle) {
-    if ($bundle instanceof Paru\Core\Bundle) {
-        $resourceName = $bundle->getResourceName();
-        $app->group("/$resourceName", function (RouteCollectorProxy $group) use ($bundle) {
-            $bundle->configureFrontendRoutes($group);
-        });
-    }
-}
-
+/**
+ * letz fetz
+ */
 $app->run();

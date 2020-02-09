@@ -37,6 +37,7 @@ use function DI\autowire;
 use function DI\get;
 
 return [
+    'paru.configuration' => require('config.php'),
     // Symfony serializer
     'symfony.serializer.encoders.xml' => autowire(XmlEncoder::class),
     'symfony.serializer.encoders.json' => autowire(JsonEncoder::class),

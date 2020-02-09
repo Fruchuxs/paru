@@ -18,15 +18,11 @@
 
 namespace Paru\Core;
 
-use Slim\Routing\RouteCollectorProxy;
-
 /**
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
 interface Bundle {
-    function getResourceName(): string;
-    function configureBackendRoutes(RouteCollectorProxy $backend): void;
-    function configureFrontendRoutes(RouteCollectorProxy $frontend): void;
+    function getRoutes(): array;
     function getServices(): array;
 }

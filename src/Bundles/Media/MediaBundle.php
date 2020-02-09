@@ -18,6 +18,7 @@
 
 namespace Paru\Bundles\Media;
 
+use Monolog\Logger;
 use Paru\Bundles\Media\Controllers\Backend\CreateMediaController;
 use Paru\Bundles\Media\Controllers\Backend\DeleteMediaController;
 use Paru\Bundles\Media\Controllers\Backend\FindMediaController;
@@ -25,7 +26,7 @@ use Paru\Bundles\Media\Controllers\Backend\ListMediaController;
 use Paru\Bundles\Media\Controllers\Backend\UpdateMediaController;
 use Paru\Core\Bundle;
 use Paru\Core\File\DirectoryHandler;
-use Slim\Routing\RouteCollectorProxy;
+use Psr\Container\ContainerInterface;
 use function DI\autowire;
 use function DI\get;
 
@@ -36,26 +37,28 @@ use function DI\get;
  */
 class MediaBundle implements Bundle {
 
-    public function configureBackendRoutes(RouteCollectorProxy $backend): void {
-        $backend->get('[/]', ListMediaController::class);
-        $backend->get('{params:.*}', FindMediaController::class);
-        $backend->post('[/]', CreateMediaController::class);
-        $backend->put('[{params:.*}]', UpdateMediaController::class);
-        $backend->delete('[{params:.*}]', DeleteMediaController::class);
+    public function getRoutes(): array {
+        return [
+            'post' => [
+                '[/]' => CreateMediaController::class
+            ],
+            'get' => [
+                '[/]' => ListMediaController::class,
+                '{params:.*}' => FindMediaController::class,
+            ],
+            'put' => [
+                '[{params:.*}]' => UpdateMediaController::class
+            ],
+            'delete' => [
+                '[{params:.*}]' => DeleteMediaController::class
+            ]
+        ];
     }
-
-    public function configureFrontendRoutes(RouteCollectorProxy $frontend): void {
-        
-    }
-
-    public function getResourceName(): string {
-        return 'media';
-    }
-
+    
     public function getServices(): array {
         return [
             'paru.bundles.media.logger' => function(ContainerInterface $c) {
-                return new \Monolog\Logger('bundles.media');
+                return new Logger('bundles.media');
             },
             'paru.bundles.media.directoryhandler' => autowire(DirectoryHandler::class)
                     ->constructorParameter('searchPath', './files'),

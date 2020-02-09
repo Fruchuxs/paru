@@ -24,7 +24,6 @@ use Paru\Bundles\Page\Controllers\Backend\DeletePageController;
 use Paru\Bundles\Page\Controllers\Backend\GetPageController;
 use Paru\Bundles\Page\Controllers\Backend\ListPageController;
 use Paru\Bundles\Page\Controllers\Backend\UpdatePageController;
-use Slim\Routing\RouteCollectorProxy;
 
 /**
  * Description of PageBundle
@@ -32,25 +31,27 @@ use Slim\Routing\RouteCollectorProxy;
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
 class PageBundle implements Bundle {
-    
-    public function getResourceName(): string {
-        return 'pages';
-    }
 
     public function getServices(): array {
         return [];
     }
 
-    public function configureBackendRoutes(RouteCollectorProxy $backend): void {
-        $backend->get('[/]', ListPageController::class);
-        $backend->get('/{name}', GetPageController::class);
-        $backend->post('[/]', CreatePageController::class);
-        $backend->put('/{name}', UpdatePageController::class);
-        $backend->delete('/{name}', DeletePageController::class);
-    }
-
-    public function configureFrontendRoutes(RouteCollectorProxy $frontend): void {
-        
+    public function getRoutes(): array {
+        return [
+            'get' => [
+                '[/]' => ListPageController::class,
+                '/{name}' => GetPageController::class
+            ],
+            'post' => [
+                '[/]' => CreatePageController::class
+            ],
+            'put' => [
+              '/{name}' => UpdatePageController::class  
+            ],
+            'delete' => [
+                '/{name}' => DeletePageController::class
+            ]
+        ];
     }
 
 }
