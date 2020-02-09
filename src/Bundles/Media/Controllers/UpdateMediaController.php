@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-namespace Paru\Bundles\Media\Controllers\Backend;
+namespace Paru\Bundles\Media\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Description of DeleteContentController
+ * Description of UpdateContentController
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
-class DeleteMediaController {
+class UpdateMediaController {
 
     public function __construct() {
         
     }
 
-    public function __invoke(Request $request, Response $response, array $args) {
+    public function __invoke(Request $request, Response $response, string $mediaPath) {
 
         return $response;
     }

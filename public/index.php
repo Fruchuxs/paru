@@ -3,6 +3,7 @@
 use DI\ContainerBuilder;
 use Paru\Core\BundlesLoader;
 use Slim\Factory\AppFactory;
+use Slim\Handlers\Strategies\RequestResponseArgs;
 
 /**
  * Change working directory for better handling ...
@@ -37,6 +38,8 @@ $config = $container->get('paru.configuration');
  */
 AppFactory::setContainer($container);
 $app = AppFactory::create();
+$routeCollector = $app->getRouteCollector();
+$routeCollector->setDefaultInvocationStrategy(new RequestResponseArgs());
 
 /**
  * Setup Middlewares

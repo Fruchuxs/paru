@@ -18,12 +18,12 @@
 
 namespace Paru\Bundles\Page;
 
+use Paru\Bundles\Page\Controllers\CreatePageController;
+use Paru\Bundles\Page\Controllers\DeletePageController;
+use Paru\Bundles\Page\Controllers\GetPageController;
+use Paru\Bundles\Page\Controllers\ListPageController;
+use Paru\Bundles\Page\Controllers\UpdatePageController;
 use Paru\Core\Bundle;
-use Paru\Bundles\Page\Controllers\Backend\CreatePageController;
-use Paru\Bundles\Page\Controllers\Backend\DeletePageController;
-use Paru\Bundles\Page\Controllers\Backend\GetPageController;
-use Paru\Bundles\Page\Controllers\Backend\ListPageController;
-use Paru\Bundles\Page\Controllers\Backend\UpdatePageController;
 
 /**
  * Description of PageBundle

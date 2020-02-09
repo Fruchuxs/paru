@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-namespace Paru\Bundles\Media\Controllers\Backend;
+namespace Paru\Bundles\Media\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Description of UpdateContentController
+ * Description of CreateContentController
  *
  * @author Fruchuxs <fruchuxs@gmail.com>
  */
-class UpdateMediaController {
+class CreateMediaController {
 
     public function __construct() {
         
     }
 
-    public function __invoke(Request $request, Response $response, array $args) {
+    public function __invoke(Request $request, Response $response) {
 
         return $response;
     }

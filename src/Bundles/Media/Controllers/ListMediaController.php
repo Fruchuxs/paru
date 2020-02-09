@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Paru\Bundles\Media\Controllers\Backend;
+namespace Paru\Bundles\Media\Controllers;
 
 use Paru\Bundles\Media\MediaFiles;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -46,11 +46,7 @@ class ListMediaController {
         $this->serializer = $serializer;
     }
 
-    public function __invoke(Request $request, Response $response, array $args) {
-        $path = null;
-        if(array_key_exists('path', $args)) {
-            $path = $args['path'];
-        }
+    public function __invoke(Request $request, Response $response, ?string $path = null) {
         $data = [];
         $files = $this->files->listFiles($path);
         $result = $this->serializer->serialize($files, 'json');

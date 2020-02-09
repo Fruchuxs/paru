@@ -19,11 +19,11 @@
 namespace Paru\Bundles\Media;
 
 use Monolog\Logger;
-use Paru\Bundles\Media\Controllers\Backend\CreateMediaController;
-use Paru\Bundles\Media\Controllers\Backend\DeleteMediaController;
-use Paru\Bundles\Media\Controllers\Backend\FindMediaController;
-use Paru\Bundles\Media\Controllers\Backend\ListMediaController;
-use Paru\Bundles\Media\Controllers\Backend\UpdateMediaController;
+use Paru\Bundles\Media\Controllers\CreateMediaController;
+use Paru\Bundles\Media\Controllers\DeleteMediaController;
+use Paru\Bundles\Media\Controllers\FindMediaController;
+use Paru\Bundles\Media\Controllers\ListMediaController;
+use Paru\Bundles\Media\Controllers\UpdateMediaController;
 use Paru\Core\Bundle;
 use Paru\Core\File\DirectoryHandler;
 use Psr\Container\ContainerInterface;

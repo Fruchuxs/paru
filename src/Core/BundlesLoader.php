@@ -35,37 +35,35 @@ class BundlesLoader {
     }
 
     public function registerServices(\Closure $registrator): void {
-        foreach ($this->bundles as $bundle) {
-            if (!is_object($bundle)) {
-                throw new Exception('Only objects are allowed');
-            }
-
-            if (!($bundle instanceof Bundle)) {
-                throw new Exception('Wrong instance given.');
-            }
-
+        $this->bundleLoop(function($name, $bundle) use($registrator) {
             $registrator($bundle->getServices());
-        }
+        });
     }
 
     public function registerRoutes(\Slim\Routing\RouteCollectorProxy $collector): void {
-        foreach ($this->bundles as $resourceName => $bundle) {
-            if (!is_object($bundle)) {
-                throw new Exception('Only objects are allowed');
-            }
-
-            if (!($bundle instanceof Bundle)) {
-                throw new Exception('Wrong instance given.');
-            }
-
+        $this->bundleLoop(function($name, $bundle) use($collector) {
             $routeDefinition = $bundle->getRoutes();
             foreach ($routeDefinition as $method => $routes) {
-                $collector->group("/$resourceName", function(\Slim\Routing\RouteCollectorProxy $group) use($method, $routes) {
+                $collector->group("/$name", function(\Slim\Routing\RouteCollectorProxy $group) use($method, $routes) {
                     foreach ($routes as $path => $callable) {
                         $group->{$method}($path, $callable);
                     }
                 });
             }
+        });
+    }
+    
+    private function bundleLoop(\Closure $callback) {
+        foreach ($this->bundles as $name => $bundle) {
+            if (!is_object($bundle)) {
+                throw new Exception('Only objects are allowed');
+            }
+
+            if (!($bundle instanceof Bundle)) {
+                throw new Exception('Wrong instance given.');
+            }
+
+            $callback($name, $bundle);
         }
     }
 

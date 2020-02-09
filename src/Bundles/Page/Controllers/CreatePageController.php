@@ -1,6 +1,6 @@
 <?php
 
-namespace Paru\Bundles\Page\Controllers\Backend;
+namespace Paru\Bundles\Page\Controllers;
 
 use Paru\Bundles\Page\CreatePage;
 use Paru\Bundles\Page\Page;
@@ -25,7 +25,7 @@ class CreatePageController {
         $this->serializer = $serializer;
     }
 
-    public function __invoke(Request $request, Response $response, array $args) {
+    public function __invoke(Request $request, Response $response) {
         $page = $this->serializer->deserialize(
                 $request->getBody(),
                 Page::class,
