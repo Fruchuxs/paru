@@ -24,7 +24,7 @@ class GetPageController {
         $this->serializer = $serializer;
     }
     
-    public function __invoke(Request $request, Response $response, array $args) {
+    public function __invoke(Request $request, Response $response, string $name) {
         if(!array_key_exists('name', $args)) {
             return $response->withStatus(404);
         }
