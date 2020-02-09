@@ -18,6 +18,10 @@
 
 namespace Paru\Core;
 
+use Closure;
+use Slim\Routing\RouteCollectorProxy;
+use TheSeer\Tokenizer\Exception;
+
 /**
  * Description of BundlesLoader
  *
@@ -34,17 +38,17 @@ class BundlesLoader {
         $this->bundles = $bundles;
     }
 
-    public function registerServices(\Closure $registrator): void {
+    public function registerServices(Closure $registrator): void {
         $this->bundleLoop(function($name, $bundle) use($registrator) {
             $registrator($bundle->getServices());
         });
     }
 
-    public function registerRoutes(\Slim\Routing\RouteCollectorProxy $collector): void {
+    public function registerRoutes(RouteCollectorProxy $collector): void {
         $this->bundleLoop(function($name, $bundle) use($collector) {
             $routeDefinition = $bundle->getRoutes();
             foreach ($routeDefinition as $method => $routes) {
-                $collector->group("/$name", function(\Slim\Routing\RouteCollectorProxy $group) use($method, $routes) {
+                $collector->group("/$name", function(RouteCollectorProxy $group) use($method, $routes) {
                     foreach ($routes as $path => $callable) {
                         $group->{$method}($path, $callable);
                     }
@@ -53,7 +57,7 @@ class BundlesLoader {
         });
     }
     
-    private function bundleLoop(\Closure $callback) {
+    private function bundleLoop(Closure $callback) {
         foreach ($this->bundles as $name => $bundle) {
             if (!is_object($bundle)) {
                 throw new Exception('Only objects are allowed');

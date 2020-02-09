@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-use Paru\Core\File\PathHelper;
-use Paru\Core\File\MimeTypeMap;
+use Monolog\Logger;
 use Paru\Core\File\DirectoryHandler;
+use Paru\Core\File\MimeTypeMap;
+use Paru\Core\File\PathHelper;
 use Paru\Core\Storage\DataFinder;
 use Paru\Core\Storage\DataFinderComposite;
 use Paru\Core\Storage\DataPersistence;
@@ -28,7 +29,8 @@ use Paru\Core\Storage\Index\FileStorageIndex;
 use Paru\Core\Storage\Index\StorageIndex;
 use Paru\Core\Storage\StorageComposite;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Finder\Finder;
+use Psr\Log\LoggerInterface;
+use Slim\Handlers\Strategies\RequestResponseArgs;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -82,7 +84,7 @@ return [
     ],
     DataFinder::class => autowire(DataFinderComposite::class)
             ->constructor(get(StorageIndex::class), get('paru.storage.find.strategies')),
-    \Psr\Log\LoggerInterface::class => autowire(Monolog\Logger::class)
+    LoggerInterface::class => autowire(Logger::class)
             ->constructor('logger'),
 
 ];
